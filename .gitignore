@@ -1,0 +1,15 @@
+# Data files (download from Kaggle instead)
+*.csv
+
+# Keep the example submission format though
+!sample_submission.csv
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Common environment / editor folders
+.venv/
+venv/
+.vscode/
+.idea/
