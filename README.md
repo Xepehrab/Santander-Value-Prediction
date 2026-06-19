@@ -50,6 +50,36 @@ python main.py
 `main.py` automatically uses `prepare.py` to get the clean data, trains the
 model, prints the cross-validation score, and creates `submission.csv`.
 
+## Results
+
+Latest run (`python main.py`):
+
+### Data preparation
+
+| Stage | Train | Test |
+|-------|-------|------|
+| Raw shape | (4459, 4993) | (49342, 4992) |
+| After cleaning + row features | (4459, 4741) | (49342, 4741) |
+
+- Removed **256** constant columns and **5** duplicate columns.
+- Added 11 row-level features per sample (sum, mean, std, min, max, zero/non-zero counts, and stats over non-zero values only).
+
+You may see harmless NumPy warnings during row-feature creation (`Mean of empty slice`, `All-NaN slice encountered`). These come from rows that are all zeros; `prepare.py` fills the resulting NaNs with 0.
+
+### Cross-validation (5-fold, LightGBM)
+
+| Fold | RMSLE | Trees |
+|------|-------|-------|
+| 1 | 1.33997 | 253 |
+| 2 | 1.39150 | 370 |
+| 3 | 1.35996 | 304 |
+| 4 | 1.35176 | 414 |
+| 5 | 1.32297 | 426 |
+
+**Overall CV RMSLE: 1.35343**
+
+Training uses early stopping (patience 100 rounds, max 5000 trees). Predictions are averaged across folds, converted back from log space with `expm1`, clipped to non-negative values, and written to `submission.csv`.
+
 ## Submission
 
 Upload the generated `submission.csv` to the competition page on Kaggle.
